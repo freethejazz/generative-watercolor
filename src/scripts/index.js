@@ -28,6 +28,36 @@ let texturize = (p5, density) => {
   }
 };
 
+const drawSpot = (p5, x, y, radius, hue) => {
+  p5.fill(
+    hue,
+    100,
+    100,
+    10
+  );
+  p5.ellipse(x, y, radius, radius);
+
+  p5.noFill();
+  for(let i = 6; i > 0; i--) {
+    p5.stroke(
+      hue,
+      100,
+      100,
+      3
+    );
+    p5.strokeWeight(i);
+    p5.ellipse(x, y, radius - i, radius - i);
+  }
+  p5.strokeWeight(1);
+  p5.stroke(
+    hue,
+    100,
+    100,
+    20
+  );
+  p5.ellipse(x, y, radius, radius);
+};
+
 let draw = (p5) => {
   p5.setup = () => {
     p5.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -35,15 +65,15 @@ let draw = (p5) => {
     p5.frameRate(5);
 
     p5.background(BASE_H, BASE_S, BASE_B);
-    // const NUM_DOTS = 400;
-    // for(let i = 0; i < NUM_DOTS; i++) {
-    //   let x = Math.random() * CANVAS_WIDTH;
-    //   let y = Math.random() * CANVAS_HEIGHT;
-    //   let r = 5 + Math.random() * 10;
-    //   p5.ellipse(x, y, r, r);
-    // }
-
     texturize(p5, 30000);
+
+    for (let i = 0; i < 10; i++) {
+      let hue = Math.random() * 100;
+      let radius = Math.random() * 250 + 50;
+      let x = Math.random() * CANVAS_WIDTH;
+      let y = Math.random() * CANVAS_HEIGHT;
+      drawSpot(p5, x, y, radius, hue);
+    }
   };
 };
 
