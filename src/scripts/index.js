@@ -1,4 +1,5 @@
 import * as P5 from 'p5';
+import seedrandom from 'seedrandom';
 
 const CANVAS_HEIGHT = 600;
 const CANVAS_WIDTH = 600;
@@ -6,21 +7,52 @@ const CANVAS_WIDTH = 600;
 const BASE_H = 15;
 const BASE_S = 10;
 const BASE_B = 100;
+// const STARTER_SEED = undefined;
+const STARTER_SEED = '0.9957501644823340.95269969042220850.97959346981259250.94626703899465710.11296706034261920.136906097352855220.89076470612657010.94772240899396930.2741413777103240.62710803966414360.84934390825906540.36647019895987565';
 
+
+// Creates a seeded random number generator
+const random = ((seed) => {
+  if (seed) {
+    console.log(`Using user-defined seed: ${seed}`);
+    return seedrandom(seed);
+  }
+
+  let seeds = [];
+  let rnd = seedrandom();
+  for(let i = 0; i < 12; i++) {
+    seeds.push(rnd());
+  }
+  console.log(`Using seed: ${seeds.join('')}`);
+  return seedrandom(seeds.join(''));
+})(STARTER_SEED);
+
+// Creates a random number.
+//
+// If one argument is given, return a random number between 0 and that argument.
+// If two arguments are given, return a random number between the two arguments.
+const randomNumber = (low, high) => {
+  if(!high) {
+    high = low;
+    low = 0;
+  }
+
+  return random() * (high - low) + low;
+};
 
 let texturize = (p5, density) => {
   for(let i = 0; i < density; i++) {
     p5.stroke(
       BASE_H,
-      BASE_S - Math.random() * 5,
-      BASE_B - Math.random() * 8,
-      Math.random() * 10 + 75
+      BASE_S - randomNumber(5),
+      BASE_B - randomNumber(8),
+      randomNumber(75, 85)
     );
 
-    let x1 = Math.random() * CANVAS_WIDTH;
-    let y1 = Math.random() * CANVAS_HEIGHT;
-    let theta = Math.random() * 2 * Math.PI;
-    let segmentLength = Math.random() * 5 + 2;
+    let x1 = randomNumber(CANVAS_WIDTH);
+    let y1 = randomNumber(CANVAS_HEIGHT);
+    let theta = randomNumber(2 * Math.PI);
+    let segmentLength = randomNumber(2, 7);
     let x2 = Math.cos(theta) * segmentLength + x1;
     let y2 = Math.sin(theta) * segmentLength + y1;
 
@@ -62,16 +94,15 @@ let draw = (p5) => {
   p5.setup = () => {
     p5.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     p5.colorMode(p5.HSB, 100);
-    p5.frameRate(5);
 
     p5.background(BASE_H, BASE_S, BASE_B);
     texturize(p5, 30000);
 
     for (let i = 0; i < 10; i++) {
-      let hue = Math.random() * 100;
-      let radius = Math.random() * 250 + 50;
-      let x = Math.random() * CANVAS_WIDTH;
-      let y = Math.random() * CANVAS_HEIGHT;
+      let hue = randomNumber(100);
+      let radius = randomNumber(50, 300);
+      let x = randomNumber(CANVAS_WIDTH);
+      let y = randomNumber(CANVAS_HEIGHT);
       drawSpot(p5, x, y, radius, hue);
     }
   };
